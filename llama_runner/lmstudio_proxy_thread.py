@@ -23,12 +23,20 @@ from llama_runner.config_loader import calculate_system_fingerprint
 from llama_runner.whisper_cpp_runner import WhisperServer
 from io import BytesIO
 from fastapi import UploadFile as FastAPIUploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 # Configure logging (already done in main.py for configurable levels)
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- Create our own FastAPI app instance ---
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # --- End create app instance ---
 
 

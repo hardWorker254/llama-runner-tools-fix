@@ -23,9 +23,17 @@ from llama_runner.ollama_proxy_conversions import (
 from llama_runner.whisper_cpp_runner import WhisperServer
 from io import BytesIO
 from fastapi import UploadFile as FastAPIUploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- Create our own FastAPI app instance ---
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # --- End create app instance ---
 
 # Define standalone handlers that access state via app.state
@@ -743,8 +751,8 @@ async def openai_chat_completions(request: Request):
     """Handles OpenAI /v1/chat/completions requests."""
     try:
         request_body = await request.json()
+        print(request_body)
         # No conversion needed here, assuming the incoming request is already OpenAI format
-
         async def chat_completion_response_stream():
             # The dynamic router handles the forwarding and streaming
             async for chunk in _dynamic_route_runner_request_generator(request, target_path="/v1/chat/completions", request_body=request_body):
